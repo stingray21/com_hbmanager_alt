@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="hbmanagerdates">
+		<fieldset name="dates">
+			<field
+				name="id"
+				type="hidden"
+			/>
+			<field
+				name="date"
+				type="calendar"
+				label="Select a date" 
+				description="bla"
+				format="%d.%m.%Y"
+				default="NOW"
+			/>
+			<field 
+				name="startdateRecent" 
+				type="gamedays" 
+				default="" 
+				class="articleselectbox" 
+				label="von Spieltag"
+			/>
+			<field 
+				name="enddateRecent" 
+				type="gamedays" 
+				default="" 
+				class="articleselectbox" 
+				label="bis Spieltag"
+			/> 
+			<field 
+				name="startdateUpcoming"
+				type="gamedays" 
+				default="" 
+				class="articleselectbox" 
+				label="von Spieltag"
+			/> 
+			<field 
+				name="enddateUpcoming"  
+				type="gamedays" 
+				default="" 
+				class="articleselectbox" 
+				label="bis Spieltag"
+			/> 
+		</fieldset>
+	</fields>
+</form>

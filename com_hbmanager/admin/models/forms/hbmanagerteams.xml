@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	
+	<fields name="hbmannschaft">
+		
+		<fieldset name="mannschaft" addfieldpath="/administrator/components/com_hbmanagerteams/models/fields">
+					
+			<field 
+				name="reihenfolge" 
+				type="text" 
+				default="" 
+				label="RF" 
+				description="" 
+				size="2" 
+			/>
+			<field 
+				name="kuerzel" 
+				type="text" 
+				default="" 
+				label="Kürzel" 
+				description="" 
+				size="7" 
+			/>
+			<field 
+				name="mannschaft" 
+				type="text" 
+				default="" 
+				label="Mannschaft" 
+				description="" 
+				size="25" 
+			/>
+			<field 
+				name="name" 
+				type="text" 
+				default="" 
+				label="Name" 
+				description="" 
+				size="20" 
+			/>
+			<field 
+				name="nameKurz" 
+				type="text" 
+				default="" 
+				label="Name" 
+				description="" 
+				size="20" 
+			/>
+			<field 
+				name="ligaKuerzel" 
+				type="text" 
+				default="" 
+				label="Liga Kürzel" 
+				description="" 
+				size="10" 
+			/>
+			<field 
+				name="liga" 
+				type="text" 
+				default="" 
+				label="Liga" 
+				description="" 
+				size="30" 
+			/>	
+			<field 
+				name="geschlecht" 
+				type="list" 
+				default="" 
+				label="m/w" 
+				description=""
+				>
+					<option value="leer">auswählen</option>					
+					<option value="m">männlich</option>
+					<option value="w">weiblich</option>
+					<option value="g">gemischt</option>
+			</field>
+			<field 
+				name="jugend"
+				type="list" 
+				default="0" 
+				label="Jugend" 
+				description=""
+				>				
+					<option value="0">Aktiv</option>
+					<option value="1">Jugend</option>
+			</field>	 
+			<field 
+				name="hvwLink" 
+				type="text" 
+				default="" 
+				label="HVW Link Extension (http://www.hvw-online.org/...)" 
+				description="Link" 
+				size="47" 
+			/>			
+		</fieldset>
+	</fields>
+	
+	<fields name="hbmannschaftNeu">
+
+		<fieldset name="mannschaftNeu" addfieldpath="/administrator/components/com_hbmanagerteams/models/fields">
+					
+			<field
+				name="includeMannschaft"
+				type="checkbox"
+				value="1" 
+				label="" 
+				description=""
+				default="0"
+			/>
+			<field 
+				name="staffel" 
+				type="text" 
+				default="" 
+				label="Kürzel" 
+				description="" 
+				size="7" 
+			/>
+			<field 
+				name="staffelName" 
+				type="text" 
+				default="" 
+				label="Liga" 
+				description="" 
+				size="40" 
+			/>
+			<field 
+				name="staffelLink" 
+				type="text" 
+				default="" 
+				label="HVW Link" 
+				description="Link" 
+				size="45" 
+			/>
+			<field 
+				name="geschlecht" 
+				type="list" 
+				default="" 
+				label="m/w" 
+				description=""
+				>
+					<option value="leer">auswählen</option>					
+					<option value="m">männlich</option>
+					<option value="w">weiblich</option>
+					<option value="g">gemischt</option>
+			</field>
+			<field 
+				name="jugend"
+				type="list" 
+				default="0" 
+				label="Jugend" 
+				description=""
+				>				
+					<option value="0">Aktiv</option>
+					<option value="1">Jugend</option>
+			</field>
+			<field 
+				name="saison" 
+				type="text" 
+				default="" 
+				label="Saison" 
+				description="" 
+				size="10" 
+			/>	 	 	 	
+			<field 
+				name="rankingName" 
+				type="list" 
+				default="" 
+				label="in Tabelle" 
+				description=""
+				>
+					<option value="leer">auswaehlen</option>
+			</field>
+			<field 
+				name="scheduleName" 
+				type="list" 
+				default="" 
+				label="in Spielplan" 
+				description=""
+				>
+					<option value="leer">auswaehlen</option>
+			</field>
+			
+			
+		</fieldset>
+	</fields>
+		
+		
+	
+	<fields name="hbmannschaftdelete">
+		
+		<fieldset name="mannschaftdelete" addfieldpath="/administrator/components/com_hbmanagerteams/models/fields">
+					
+			<field
+				name="deleteTeam"
+				type="checkbox"
+				value="1" 
+				label="löschen" 
+				description=""
+				default="0"
+			/>
+			<field 
+				name="kuerzel" 
+				type="hidden" 
+				default="" 
+			/>
+		</fieldset>
+	</fields>
+</form>

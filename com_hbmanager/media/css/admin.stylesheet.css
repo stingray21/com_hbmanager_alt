@@ -1,0 +1,217 @@
+.icon-48-hvw {
+  background: url('../images/hvw-48.png') 0 0 no-repeat;
+}
+
+.icon-48-hblogo {
+  background: url('../images/hblogo-48.png') 0 0 no-repeat;
+}
+
+a.hbbutton,
+input.submit {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+	background:-moz-linear-gradient( center top, #e9e9e9 5%, #dfdfdf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#dfdfdf');
+	background-color:#e9e9e9;
+	-webkit-border-top-left-radius:6px;
+	-moz-border-radius-topleft:6px;
+	border-top-left-radius:6px;
+	-webkit-border-top-right-radius:6px;
+	-moz-border-radius-topright:6px;
+	border-top-right-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
+	-moz-border-radius-bottomright:6px;
+	border-bottom-right-radius:6px;
+	-webkit-border-bottom-left-radius:6px;
+	-moz-border-radius-bottomleft:6px;
+	border-bottom-left-radius:6px;
+	text-indent:0;
+	border:1px solid #cccccc;
+	display:inline-block;
+	/*color:#777777;*/
+	color: #025A8D;
+	font-weight:bold;
+	font-style:normal;
+	line-height:1.5em;
+	margin-right: 2em; 
+	padding: 0.2em 1em;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #ffffff;
+}
+
+a.hbbutton:hover,
+input.submit:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+	background-color:#dfdfdf;
+	text-decoration:none;
+}
+
+a.hbbutton:active,
+input.submit:active {
+	position:relative;
+	top:1px;
+}
+
+
+div#amtsblatt {
+	background: white;
+	width: 12cm;
+	border: 1px solid #ccc;
+	padding: 2em;
+	margin: 10px;
+}
+
+div.spiele h3 {
+	clear: both;
+	font-size: 150%;
+}
+
+div.spiele h4 {
+	clear: both;
+	background: #ddd;
+	color: #146295;
+	line-height: 1.25em;
+	padding: 0.5em 0.75em;
+	margin: 1em 0 0.25em 1em;
+}
+
+div.spiele div.spieleSpiel div {
+	margin: 0 0 1em 1em;
+}
+
+div.spiele div.spieleSpiel div {
+	float: left;
+	padding: 0 0.5em;
+}
+
+div.spiele div.spieleInfos table {
+	font-size: 1.5em;
+	margin: 0 0 0.5em 0;
+	clear: both;
+}
+
+div.spiele div.spieleInfos p {
+	margin: 0.25em;
+}
+
+div.spiele div.spieleInfos table th{
+	width: 10em;
+}
+
+div.spiele div.spieleSpiel dl {
+	margin: 0;
+	padding: 0;
+}
+
+div.spiele div.spieleSpiel dt {
+	margin: 0;
+	padding: 0;
+	color: #777;
+	font-size: 0.8em;
+}
+
+div.spiele div.spieleSpiel dt label {
+	margin: 0.5em 0 0 0;
+	padding: 0;
+	min-width: 0;
+}
+
+div.spiele div.spieleSpiel dd textarea {
+	margin: 0;
+	padding: 0;
+}
+
+div.spiele div.spieleSpiel dd {
+	margin: 0;
+	padding: 0 0 0.5em 0;
+}
+
+div.spiele div.spieleSpiel dl.spieleTore {
+	margin: 0 0 0 0;
+	padding: 0.5em 0 0 0;
+}
+
+div.spiele div.spieleSpiel dl.spieleTore dt,
+div.spiele div.spieleSpiel dl.spieleTore dd {
+	float: left;
+}
+
+div.spiele div.spieleSpiel dl.spieleTore label {
+	margin: 0.5em 0.5em 0 0;
+	padding: 0;
+}
+
+div.spiele div.spieleSpiel dl.spieleTore input {
+	margin: 0.5em 1.5em 0 0;
+	padding: 0;
+}
+	
+table.upcomingGamesTable td.game {
+	border-bottom: 2px solid gray;
+}
+	
+table.upcomingGamesTable th.game {
+	border-bottom: 2px solid gray;
+	padding: 0;
+	vertical-align: top;
+	text-align: right;
+}
+	
+table.upcomingGamesTable td.game td {
+	padding: 0;
+}
+
+table.upcomingGamesTable td.game td.alignright {
+	text-align: right;
+}
+	
+table.upcomingGamesTable td.game th {
+	text-align: right;
+	padding: 0;
+}
+
+table#hvwupdate {
+	margin: 20px 5px;
+}
+
+table#hvwupdate th {
+	padding: 0.2em 1em 0.5em 0.2em;
+	text-align: left;    
+	font-size: 110%;
+}
+
+table#hvwupdate td {
+	padding: 0.2em 1em 0.2em 0.2em;
+	height: 2em;
+}
+
+
+form#datesForm label {
+	min-width: 0;
+}
+
+form#addTeam label {
+	min-width: 0;
+}
+
+form#datesForm dt,
+form#datesForm dd {
+	float: left;
+	margin: 2px 1em 0 0;
+}
+
+form#datesForm input {
+	float: left;
+}
+
+form#addTeam fieldset select {
+	width: 95%;
+}
+
+form#updateTeams label {
+	min-width: 0;
+}
