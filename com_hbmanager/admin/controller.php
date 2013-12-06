@@ -176,19 +176,27 @@ class HBmanagerController extends JController
 		$model = $this->getModel('hbrecentgames');
 		
 		$post = JRequest::get('post');
-		//echo "<pre>"; print_r($post); echo "</pre>";
-
+		//echo "<p>POST in controller</p><pre>"; print_r($post); echo "</pre>";
 		
-		if (isset($post['sent']))
-		{
-			if ($post['sent'] == true)
-			{
-				$previousGames = $model->getPreviousGamesArray($post);
-				//echo "<pre>PreviousGames"; print_r($previousGames); echo "</pre>";
-				
-				$model->writeDB($previousGames);
-				$model->writeNews();
-			}
+		$model->setDates($post['hbmanagerdates']);
+		
+// 		if (isset($post['date_button'])) {
+// 			//echo "<p>Date button</p>";
+// 			$model->setDates($post['hbmanagerdates']);
+// 		}
+
+		$previousGames = $post['hbrecentgames'];
+		if (isset($post['update_button'])) {
+			//echo "<p>Update button</p>";
+			$model->writeDB($previousGames);
+		} 
+		else if (isset($post['article_button'])) {
+			//echo "<p>Article button</p>";
+			$model->writeDB($previousGames);
+			$model->writeNews();
+		} 
+		else {
+			//no button pressed
 		}
 		
 		$view = $this->getView('hbrecentgames','html');
@@ -205,9 +213,30 @@ class HBmanagerController extends JController
 		$jinput = JFactory::getApplication()->input;
 		
 		$model = $this->getModel('hbupcominggames');
-		
+
 		$post = JRequest::get('post');
-		//echo "<pre>"; print_r($post); echo "</pre>";
+		//echo "<p>POST in controller</p><pre>"; print_r($post); echo "</pre>";
+		
+		$model->setDates($post['hbmanagerdates']);
+		
+		// 		if (isset($post['date_button'])) {
+		// 			//echo "<p>Date button</p>";
+		// 			$model->setDates($post['hbmanagerdates']);
+		// 		}
+		
+		$upcomingGames = $post['hbupcominggames'];
+		if (isset($post['update_button'])) {
+			//echo "<p>Update button</p>";
+			$model->updateDB($upcomingGames);
+		}
+		else if (isset($post['article_button'])) {
+			//echo "<p>Article button</p>";
+			$model->updateDB($upcomingGames);
+			$model->writeNews();
+		}
+		else {
+			//no button pressed
+		}
 		
 		if (isset($post['sent']))
 		{
@@ -234,7 +263,7 @@ class HBmanagerController extends JController
 	function showAmtsblatt()
 	{
 		$jinput = JFactory::getApplication()->input;
-	
+		
 		$model = $this->getModel('hbamtsblatt');
 		
 		$post = JRequest::get('post');
@@ -242,17 +271,16 @@ class HBmanagerController extends JController
 		
 		if ($post['dateChanged'])
 		{
-			//echo "Datum ge√§ndert <br />";
+			//echo "Datum ge‰ndert <br />";
 			$model->updateDates($post['hbmanagerfields']);
 		}
-		
 		//$model->writeAmtsblatt();
 		
 		$view = $this->getView('hbamtsblatt','html');
 		$view->setModel($model, true);
 		$view->display();
 		//self::display();
-
+		
 		// Set the submenu
 		hbmanagerHelper::addSubmenu('hbamtsblatt');
 	}

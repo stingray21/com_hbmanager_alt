@@ -43,8 +43,7 @@ $form = &JForm::getInstance('myform', JPATH_COMPONENT_ADMINISTRATOR.DS.'models'.
 				<?php echo $form->getInput('enddateRecent', 'hbmanagerdates', $this->dates['enddateRecent']); ?>
 				</dd>
 			</dl>
-			<input type="hidden" name="dateChanged" value="1" />
-			<input class="submit" type="submit" name="submit" value="Datum aktualisieren" />
+			<input class="submit" type="submit" name="date_button" id="date_button" value="Datum aktualisieren" />
 		</fieldset>
 		
 	</div>
@@ -99,7 +98,7 @@ $form = &JForm::getInstance('myformgames', JPATH_COMPONENT_ADMINISTRATOR.DS.'mod
 					echo '</div>'."\n";
 						
 					echo '<div class="spieleBericht">'."\n";
-						echo $form->getInput('spielIDhvw', 'hbrecentgames', $game->spielIDhvw)."\n";
+						echo $this->model->formatInput($form->getInput('spielIDhvw', 'hbrecentgames', $game->spielIDhvw), $i)."\n";
 						echo '<dl>'."\n";
 							echo '<dt>';
 								echo $form->getLabel('bericht', 'hbrecentgames');
@@ -151,10 +150,10 @@ $form = &JForm::getInstance('myformgames', JPATH_COMPONENT_ADMINISTRATOR.DS.'mod
 ?>
 <div class="clr"></div>
 
-			<input type="hidden" name="sent" id="sent" value="1" />
 			<input type="hidden" name="userid" id="userid" value="<?php echo $userid?>" />
 			<input type="hidden" name="Itemid" id "Itemid" value="<?php echo $_REQUEST["Itemid"]?>" />
-			<input class="submit" type="submit" name="submit" id="submit" value="Okay" />
+			<input class="submit" type="submit" name="update_button" id="update_button" value="Berichte speichern" />
+			<input class="submit" type="submit" name="article_button" id="article_button" value="Artikel einstellen" />
 		</fieldset>
 		
 	</div>

@@ -42,6 +42,32 @@
 				class="articleselectbox" 
 				label="bis Spieltag"
 			/> 
+			
+			
+			<field 
+				name="hiddenStartdateRecent" 
+				type="hidden" 
+				default="" 
+				label="von Spieltag"
+			/>
+			<field 
+				name="hiddenEnddateRecent" 
+				type="hidden" 
+				default="" 
+				label="bis Spieltag"
+			/> 
+			<field 
+				name="hiddenStartdateUpcoming"
+				type="hidden" 
+				default="" 
+				label="von Spieltag"
+			/> 
+			<field 
+				name="hiddenEnddateUpcoming"  
+				type="hidden" 
+				default=""  
+				label="bis Spieltag"
+			/> 
 		</fieldset>
 	</fields>
 </form>

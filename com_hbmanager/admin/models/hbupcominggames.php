@@ -16,10 +16,10 @@ class HBmanagerModelHBupcomingGames extends JModel
 	function __construct() 
 	{
 		parent::__construct();
-	
+		
 		setlocale(LC_TIME, "de_DE");
-		$datedefault = "next Saturday";
-		self::setDateStart($datedefault);
+		//$datedefault = "next Saturday";
+		//self::setDateStart($datedefault);
 		//$this->dateStart = strftime("%Y-%m-%d", strtotime($datedefault)-432000);
 		//$this->dateEnd = strftime("%Y-%m-%d", strtotime($datedefault)+518400);
 		
@@ -69,9 +69,9 @@ class HBmanagerModelHBupcomingGames extends JModel
 				$dates['startdateUpcoming'] = $result;
 			}
 			else {
-				$query = "SELECT `datum` from `aaa_spiel` WHERE `datum` < ".
+				$query = "SELECT `datum` from `aaa_spiel` WHERE `datum` > ".
 						$db->q(strftime("%Y-%m-%d", strtotime('next Monday', strtotime('next friday', strtotime($todaydate))))).
-						" ORDER BY `datum` DESC LIMIT 1";
+						" ORDER BY `datum` ASC LIMIT 1";
 				// Zur Kontrolle
 				//echo "<a>ModelHB->query (else): </a><pre>"; echo $query; echo "</pre>";
 				$db->setQuery($query);
@@ -185,44 +185,42 @@ class HBmanagerModelHBupcomingGames extends JModel
 		
 		$db = $this->getDbo();
 		
-		foreach ($upcomingGames as $day)
+		foreach ($upcomingGames as $game)
 		{
-			foreach ($day as $game)
+			//echo "<pre>game in updateDB"; print_r($game); echo "</pre>";
+					
+			foreach ($game as $key => $value)
 			{
-				if (!empty($game['vorbericht']) OR !empty($game['treffOrt']) OR !empty($game['treffZeit']))
+				$game[$key] = trim($value);
+			}
+			
+			//echo count(array_filter($game));
+			if (count(array_filter($game)) > 1)
+			//if (!empty($game['vorbericht']) OR !empty($game['treffOrt']) OR !empty($game['treffZeit']))
+			{				
+				$query = $db->getQuery(true);
+				$query = "REPLACE INTO {$db->quoteName('aaa_spielvorschau')} 
+					({$db->quoteName('SpielIDhvw')}, {$db->quoteName('vorschau')}, {$db->quoteName('treffOrt')}, {$db->quoteName('treffZeit')}) 
+					VALUES (".$db->quote($game['spielIDhvw']).', ';
+					if (!empty($game['vorschau'])) $query .= $db->quote($game['vorschau']);
+						else $query .= 'NULL';
+						$query .= ', ';
+					if (!empty($game['treffOrt'])) $query .= $db->quote($game['treffOrt']);
+						else $query .= 'NULL';
+						$query .= ', ';
+					if (!empty($game['treffZeit'])) $query .= $db->quote($game['treffZeit']);
+						else $query .= 'NULL';
+					$query .=');';
+				//echo $query; echo '<br />';
+				$db->setQuery($query);
+				try
 				{
-					
-					$query = $db->getQuery(true);
-					$query->select('teamkey');
-					$query->from('hb_teams');
-					$query->where($db->quoteName('league').' = '.$db->quote($game['klasse']));
-					$db->setQuery($query);
-					$teamkey = $db->loadResult();
-					
-					$query = $db->getQuery(true);
-					$query = "REPLACE INTO {$db->quoteName('aaa_spielvorschau')} 
-						({$db->quoteName('SpielIDhvw')}, {$db->quoteName('vorschau')}, {$db->quoteName('treffOrt')}, {$db->quoteName('treffZeit')}) 
-						VALUES (".$db->quote($game['spielIDhvw']).', ';
-						if (!empty($game['vorbericht'])) $query .= $db->quote($game['vorbericht']);
-							else $query .= 'NULL';
-							$query .= ', ';
-						if (!empty($game['treffOrt'])) $query .= $db->quote($game['treffOrt']);
-							else $query .= 'NULL';
-							$query .= ', ';
-						if (!empty($game['treffZeit'])) $query .= $db->quote($game['treffZeit']);
-							else $query .= 'NULL';
-						$query .=');';
-					//echo $query; echo '<br />';
-					$db->setQuery($query);
-					try
-					{
-						// Execute the query in Joomla 2.5.
-						$result = $db->query();
-					}
-					catch (Exception $e)
-					{
-						// catch any database errors.
-					}
+					// Execute the query in Joomla 2.5.
+					$result = $db->query();
+				}
+				catch (Exception $e)
+				{
+					// catch any database errors.
 				}
 			}
 		}
@@ -239,6 +237,7 @@ class HBmanagerModelHBupcomingGames extends JModel
 		$query->from('aaa_spielvorschau');
 		$query->leftJoin($db->quoteName('aaa_spiel').' USING ('.$db->quoteName('spielIDhvw').')');
 		$query->leftJoin($db->quoteName('aaa_mannschaft').' USING ('.$db->quoteName('kuerzel').')');
+		$query->leftJoin($db->quoteName('aaa_halle').' USING ('.$db->quoteName('hallenNummer').')');
 		$query->where($db->quoteName('datum').' BETWEEN '.$db->quote($this->dateStart).' AND '.$db->quote($this->dateEnd));
 		$query->order($db->quoteName('reihenfolge').' ASC');
 		//echo $query;echo "<br />";
@@ -246,178 +245,182 @@ class HBmanagerModelHBupcomingGames extends JModel
 		$games = $db->loadObjectList();
 		//echo "<pre>Games \n"; print_r($games); echo "</pre>";
 		
-		// frï¿½hestes und spï¿½testes betroffenes Datum
-		$query = $db->getQuery(true);
-		$query->select('MIN('.$db->quoteName('datum').') AS min, MAX('.$db->quoteName('datum').') AS max');
-		$query->from('aaa_spielvorschau');
-		$query->leftJoin($db->quoteName('aaa_spiel').' USING ('.$db->quoteName('spielIDhvw').')');
-		$query->where($db->quoteName('datum').' BETWEEN '.$db->quote($this->dateStart).' AND '.$db->quote($this->dateEnd));
-		//echo $query;echo "<br />";
-		$db->setQuery($query);
-		$dateframe = $db->loadObject();
-		//echo "<pre>Datum: \n"; print_r($dateframe); echo "</pre>";
-		
-		
-		// Darstellung Datum
-		if ($dateframe->min == $dateframe->max)
+		if (!empty($games))
 		{
-			$titledate = strftime("%a, ", strtotime($dateframe->min)).ltrim(strftime("%d. %b %Y", strtotime($dateframe->min)),'0');
-			$titledateKW = 'KW'.ltrim(strftime("%V", strtotime($dateframe->min)),'0');
-		}
-		else
-		{
-			if (strftime("%u", strtotime($dateframe->min)) == 6 AND strftime("%u", strtotime($dateframe->max)) == 7)
+			// fruehestes und spaetestes betroffenes Datum
+			$query = $db->getQuery(true);
+			$query->select('MIN('.$db->quoteName('datum').') AS min, MAX('.$db->quoteName('datum').') AS max');
+			$query->from('aaa_spielvorschau');
+			$query->leftJoin($db->quoteName('aaa_spiel').' USING ('.$db->quoteName('spielIDhvw').')');
+			$query->where($db->quoteName('datum').' BETWEEN '.$db->quote($this->dateStart).' AND '.$db->quote($this->dateEnd));
+			//echo $query;echo "<br />";
+			$db->setQuery($query);
+			$dateframe = $db->loadObject();
+			//echo "<pre>Datum: \n"; print_r($dateframe); echo "</pre>";
+			
+			
+			// Darstellung Datum
+			if ($dateframe->min == $dateframe->max)
 			{
-				if (strftime("%m", strtotime($dateframe->min)) == strftime("%m", strtotime($dateframe->max)))
-				{
-					$titledate = 'Wochenende '.ltrim(strftime("%d./", strtotime($dateframe->min)),'0').ltrim(strftime("%d. %b %Y", strtotime($dateframe->max)),'0');
-				}
-				else
-				{
-					$titledate = 'Wochenende '.ltrim(strftime("%d. %b / ", strtotime($dateframe->min)),'0').ltrim(strftime("%d. %b %Y", strtotime($dateframe->max)),'0');
-				}
-			}
-			else
-			{
-				$titledate = ltrim(strftime("%d. %b %Y", strtotime($dateframe->min)),'0').' bis '.ltrim(strftime("%d. %b %Y", strtotime($dateframe->max)),'0');
-			}
-				
-			if (strftime("%V", strtotime($dateframe->min)) == strftime("%V", strtotime($dateframe->max)))
-			{
-	
+				$titledate = strftime("%A, ", strtotime($dateframe->min)).ltrim(strftime("%d. %b %Y", strtotime($dateframe->min)),'0');
 				$titledateKW = 'KW'.ltrim(strftime("%V", strtotime($dateframe->min)),'0');
 			}
 			else
 			{
-				$titledateKW = 'KW'.ltrim(strftime("%V", strtotime($dateframe->min)),'0').' bis KW'.ltrim(strftime("%V", strtotime($dateframe->max)),'0');
-			}
-		}
+				if (strftime("%u", strtotime($dateframe->min)) == 6 AND strftime("%u", strtotime($dateframe->max)) == 7)
+				{
+					if (strftime("%m", strtotime($dateframe->min)) == strftime("%m", strtotime($dateframe->max)))
+					{
+						$titledate = 'Wochenende '.ltrim(strftime("%d./", strtotime($dateframe->min)),'0').ltrim(strftime("%d. %b %Y", strtotime($dateframe->max)),'0');
+					}
+					else
+					{
+						$titledate = 'Wochenende '.ltrim(strftime("%d. %b / ", strtotime($dateframe->min)),'0').ltrim(strftime("%d. %b %Y", strtotime($dateframe->max)),'0');
+					}
+				}
+				else
+				{
+					$titledate = ltrim(strftime("%d. %b %Y", strtotime($dateframe->min)),'0').' bis '.ltrim(strftime("%d. %b %Y", strtotime($dateframe->max)),'0');
+				}
+					
+				if (strftime("%V", strtotime($dateframe->min)) == strftime("%V", strtotime($dateframe->max)))
+				{
 		
-		$formerMannschaft = '';
-		$content = '<div class="newsspieltag">';
-		foreach ($games as $game)
-		{
-				
-			if ($formerMannschaft != $game->mannschaft)
-			{
-				$content .= '<h4>'.
-						'<a href="'.JURI::Root().'index.php/'.strtolower($game->kuerzel).'-home">'.
-						$game->mannschaft.' - '.$game->liga.' ('.$game->ligaKuerzel.')</a>'.
-						'</h4>';
+					$titledateKW = 'KW'.ltrim(strftime("%V", strtotime($dateframe->min)),'0');
+				}
+				else
+				{
+					$titledateKW = 'KW'.ltrim(strftime("%V", strtotime($dateframe->min)),'0').' bis KW'.ltrim(strftime("%V", strtotime($dateframe->max)),'0');
+				}
 			}
-			$formerMannschaft = $game->mannschaft;
-				
-			$content .= '<div>';
-			$content .= '<dl class="vorbericht">'.
-					'<dt>Spiel</dt><dd>'.$game->heim.' - '.$game->gast.'</td>'.
-					'<dd>'.strftime("%A, %d.%m.%Y", strtotime($game->datum)).' um '.strftime("%H:%M Uhr", strtotime($game->uhrzeit)).'</dd>';
-			if (!empty($game->treffOrt) OR !empty($game->treffZeit))
+			
+			$formerMannschaft = '';
+			$content = '<div class="newsspieltag">';
+			foreach ($games as $game)
 			{
-				$content .= '<dt>Treffpunkt';
-				if ($game->hallenNummer != '7014') $content.= '/Abfahrt';
-				$content .= '</dt>';
-				$content .= '<dd>'.$game->treffOrt;
-				if (!empty($game->treffZeit)) $content .= ' um '.strftime("%H:%M Uhr", strtotime($game->treffZeit));
-				$content .= '</dd>';
+					
+				if ($formerMannschaft != $game->mannschaft)
+				{
+					$content .= '<h4>'.
+							'<a href="'.JURI::Root().'index.php/'.strtolower($game->kuerzel).'-home">'.
+							$game->mannschaft.' - '.$game->liga.' ('.$game->ligaKuerzel.')</a>'.
+							'</h4>';
+				}
+				$formerMannschaft = $game->mannschaft;
+					
+				$content .= '<div class="vorberichtspiel">';
+				$content .= '<a class="vorberichtspiel">'.$game->heim.' - '.$game->gast.'</a>';
+				$content .= '<dl class="vorbericht">'.
+						'<dt>Spiel</dt><dd>'.strftime("%A, %d.%m.%Y", strtotime($game->datum)).
+						' um '.strftime("%H:%M Uhr", strtotime($game->uhrzeit)).
+						' in '.$game->stadt.'</dd>';
+				if (!empty($game->treffOrt) OR !empty($game->treffZeit))
+				{
+					$content .= '<dt>Treffpunkt';
+					if ($game->hallenNummer != '7014') $content.= '/Abfahrt';
+					$content .= '</dt>';
+					$content .= '<dd>'.$game->treffOrt;
+					if (!empty($game->treffZeit)) $content .= ' um '.strftime("%H:%M Uhr", strtotime($game->treffZeit));
+					$content .= '</dd>';
+				}
+				$content .= '</dl>';
+				if (!empty($game->vorschau))$content .= '<p class="vorbericht">'.$game->vorschau.'</p>';
+			
+				$content .= '</div>';
+					
 			}
-			$content .= '</dl>';
-			if (!empty($game->vorschau))$content .= '<p class="vorbericht">'.$game->vorschau.'</p>';
-		
 			$content .= '</div>';
-				
-		}
-		$content .= '</div>';
-		//echo $content;
-		
-		$timestamp = time();
-		$alias = date('Ymd-His', $timestamp).'-news-vorschau'; 
-		
-		$table = JTable::getInstance('Content', 'JTable', array());
-		
-		$data = array(
-				'alias' => $alias,
-				'title' => 'Vorschau fï¿½r '.$titledate, 
-				//'title' => 'Vorschau fï¿½r '.$titledateKW, //alternativ Anzeige KW statt Datum
-				'introtext' => $content,
-				//'fulltext' => '', //fï¿½r Text der beim Klicken auf "Weiterlesen" erscheint
-				'state' => 1,
-				'catid' => 8,
-				'featured' => 1
-		);
-		
-		// Bind data
-		if (!$table->bind($data))
-		{
-			$this->setError($table->getError());
-			return false;
-		}
-		
-		// Check the data.
-		if (!$table->check())
-		{
-			$this->setError($table->getError());
-			return false;
-		}
-		
-		// Store the data.
-		if (!$table->store())
-		{
-			$this->setError($table->getError());
-			return false;
-		}
-		
-		//To reorder the category
-		//$table->reorder('catid = '.(int) $table->catid.' AND state >= 0');
-		
-		
-		
-		
-		
-		// auf frontpage setzen
-		
-		// content_ID ermitteln
-		$query = $db->getQuery(true);
-		$query->select($db->quoteName('ID'));
-		$query->from($db->quoteName('#__content'));
-		$query->where($db->quoteName('alias').' = '.$db->quote($alias));
-		//echo $query;echo "<br />";
-		$db->setQuery($query);
-		$contentID = $db->loadResult();
-		//echo "<pre>ID (Content): \n"; print_r($contentID); echo "</pre>";
-		
-		// Reihenfolge bereits auf frontpage dargestellter Artikel inkrementieren
-		$query = $db->getQuery(true);
-		$query->update($db->quoteName('#__content_frontpage'));
-		$query->set($db->quoteName('ordering').' = '.$db->quoteName('ordering').'+1');
-		//echo $query;echo "<br />";
-		$db->setQuery($query);
-		try 
-		{
-			// Execute the query in Joomla 2.5.
-			$result = $db->query();
-		} 
+			//echo $content;
+			
+			$timestamp = time();
+			$alias = date('Ymd-His', $timestamp).'-news-vorschau'; 
+			
+			$table = JTable::getInstance('Content', 'JTable', array());
+			
+			$data = array(
+					'alias' => $alias,
+					'title' => 'Vorschau für '.$titledate, 
+					//'title' => 'Vorschau für '.$titledateKW, //alternativ Anzeige KW statt Datum
+					'introtext' => $content,
+					//'fulltext' => '', //für Text der beim Klicken auf "Weiterlesen" erscheint
+					'state' => 1,
+					'catid' => 8,
+					'featured' => 1
+			);
+			
+			// Bind data
+			if (!$table->bind($data))
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+			
+			// Check the data.
+			if (!$table->check())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+			
+			// Store the data.
+			if (!$table->store())
+			{
+				$this->setError($table->getError());
+				return false;
+			}
+			
+			//To reorder the category
+			//$table->reorder('catid = '.(int) $table->catid.' AND state >= 0');
+			
+			
+			
+			
+			
+			// auf frontpage setzen
+			
+			// content_ID ermitteln
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('ID'));
+			$query->from($db->quoteName('#__content'));
+			$query->where($db->quoteName('alias').' = '.$db->quote($alias));
+			//echo $query;echo "<br />";
+			$db->setQuery($query);
+			$contentID = $db->loadResult();
+			//echo "<pre>ID (Content): \n"; print_r($contentID); echo "</pre>";
+			
+			// Reihenfolge bereits auf frontpage dargestellter Artikel inkrementieren
+			$query = $db->getQuery(true);
+			$query->update($db->quoteName('#__content_frontpage'));
+			$query->set($db->quoteName('ordering').' = '.$db->quoteName('ordering').'+1');
+			//echo $query;echo "<br />";
+			$db->setQuery($query);
+			try 
+			{
+				// Execute the query in Joomla 2.5.
+				$result = $db->query();
+			} 
+				catch (Exception $e) {
+				// catch any database errors.
+			}
+			
+			// in Frontpage DB table einf?gen
+			$columns = array('content_id', 'ordering');
+			$values = array($db->quote($contentID), 1);
+			$query = $db->getQuery(true);
+			$query->insert($db->quoteName('#__content_frontpage'));
+			$query->columns($db->quoteName($columns));
+			$query->values(implode(',', $values));
+			//echo $query;echo "<br />";
+			$db->setQuery($query);
+			try
+			{
+				// Execute the query in Joomla 2.5.
+				$result = $db->query();
+			}
 			catch (Exception $e) {
-			// catch any database errors.
-		}
-		
-		// in Frontpage DB table einfï¿½gen
-		$columns = array('content_id', 'ordering');
-		$values = array($db->quote($contentID), 1);
-		$query = $db->getQuery(true);
-		$query->insert($db->quoteName('#__content_frontpage'));
-		$query->columns($db->quoteName($columns));
-		$query->values(implode(',', $values));
-		//echo $query;echo "<br />";
-		$db->setQuery($query);
-		try
-		{
-			// Execute the query in Joomla 2.5.
-			$result = $db->query();
-		}
-		catch (Exception $e) {
-			// catch any database errors.
-		}
-		
+				// catch any database errors.
+			}
+		}	
 	}
 	
 

@@ -21,13 +21,13 @@ class HBmanagerViewHBupcomingGames extends JView
 		$this->assignRef('mannschaften', $mannschaften);
 		
 		$post = JRequest::get('post');
-		echo "<pre>"; print_r($post); echo "</pre>";
+		//echo "<pre>"; print_r($post); echo "</pre>";
 		$this->assignRef('post', $post);
 		
-		$model->setDates($post['hbmanagerdates']);
-		$dates = $model->getDates();
-		//echo "<pre>dates in view.html.php\n"; print_r($dates); echo "</pre>";
-		$this->assignRef('dates', $dates);
+// 		$model->setDates($post['hbmanagerdates']);
+ 		$dates = $model->getDates();
+ 		//echo "<pre>dates in view.html.php\n"; print_r($dates); echo "</pre>";
+ 		$this->assignRef('dates', $dates);
 		
 		$games = $model->getGames();
 		//echo "<pre>"; print_r($games); echo "</pre>";

@@ -156,65 +156,124 @@ class HBmanagerModelHBrecentGames extends JModel
 		return $this->recentGames = $sortedGames;
 	}
 	
-	function getPreviousGamesArray($post = ''){
-		for ($day = 0; $day <= 7; $day++) {
-			$i = 0;
+// 	function getPreviousGamesArray($post = ''){
+// 		//echo "<pre>Post"; print_r($post); echo "</pre>";
+// 		for ($day = 0; $day <= 7; $day++) {
+// 			$i = 0;
 			
-			while ($post["{$day}-{$i}_spielIDhvw"]) {
+// 			while ($post["{$day}-{$i}_spielIDhvw"]) {
 				
-				$previousGames[$day][$i]['spielIDhvw'] = strip_tags(trim($post["{$day}-{$i}_spielIDhvw"]));
-				$previousGames[$day][$i]['bericht'] = strip_tags(trim($post["{$day}-{$i}_bericht"]));
-				$previousGames[$day][$i]['spielerliste'] = strip_tags(trim($post["{$day}-{$i}_spielerliste"]));
+// 				$previousGames[$day][$i]['spielIDhvw'] = strip_tags(trim($post["{$day}-{$i}_spielIDhvw"]));
+// 				$previousGames[$day][$i]['bericht'] = strip_tags(trim($post["{$day}-{$i}_bericht"]));
+// 				$previousGames[$day][$i]['spielerliste'] = strip_tags(trim($post["{$day}-{$i}_spielerliste"]));
 				
-				$i++;
-			}
-		}
+// 				$i++;
+// 			}
+// 		}
 		
-		// Zur Kontrolle
-		// echo "<pre>PreviousGames";print_r($previousGames);echo "</pre>";
+// 		// Zur Kontrolle
+// 		// echo "<pre>PreviousGames";print_r($previousGames);echo "</pre>";
 		
-		return $previousGames;
-	}
+// 		return $previousGames;
+// 	}
+
+// 	function writeDB($previousGames = array())
+// 	{
+// 		if (empty($previousGames)) return;
+	
+// 		$db = $this->getDbo();
+	
+// 		//bei  und  whitespace entfernen (prüfen ob wirklich nicht leer)
+	
+// 		foreach ($previousGames as $day)
+// 		{
+// 			foreach ($day as $game)
+// 			{
+// 				$game['bericht'] = trim($game['bericht']);
+// 				$game['spielerliste'] = trim($game['spielerliste']);
+	
+// 				if (!empty($game['bericht']) && !empty($game['spielerliste']))
+// 				{
+						
+// 					$query = $db->getQuery(true);
+// 					$query = "REPLACE INTO {$db->quoteName('aaa_spielbericht')}
+// 					({$db->quoteName('spielIDhvw')}, {$db->quoteName('bericht')}, {$db->quoteName('spielerliste')})
+// 					VALUES ({$db->quote($game['spielIDhvw'])}, ";
+// 					if (!empty($game['bericht'])) $query .= $db->quote($game['bericht']);
+// 							else $query .= 'NULL';
+// 							$query .= ', ';
+// 							if (!empty($game['spielerliste'])) $query .= $db->quote($game['spielerliste']);
+// 									else $query .= 'NULL';
+// 									$query .= ");";
+// 									//echo $query; echo '<br />';
+// 									$db->setQuery($query);
+// 									try
+// 									{
+// 										// Execute the query in Joomla 2.5.
+// 										$result = $db->query();
+// 				}
+// 				catch (Exception $e)
+// 				{
+// 					// catch any database errors.
+// 				}
+// 				}
+// 			}
+// 		}
+	
+// 	}
 	
 	function writeDB($previousGames = array())
 	{
+		//echo "<pre>previousGames in writeDB"; print_r($previousGames); echo "</pre>";
 		if (empty($previousGames)) return;
 		
 		$db = $this->getDbo();
 		
-		//bei  und  whitespace entfernen (prÃ¼fen ob wirklich nicht leer)
+		//bei  und  whitespace entfernen (prüfen ob wirklich nicht leer)
 		
-		foreach ($previousGames as $day)
+		foreach ($previousGames as $game)
 		{
-			foreach ($day as $game)
+			//echo "<pre>game in writeDB"; print_r($game); echo "</pre>";
+			
+			foreach ($game as $key => $value)
 			{
-				$game['bericht'] = trim($game['bericht']);
-				$game['spielerliste'] = trim($game['spielerliste']);
+				$game[$key] = trim($value);
+			}
+			
+			//echo count(array_filter($game));
+			if (count(array_filter($game)) > 1)
+			//if (!empty($game['bericht']) || !empty($game['spielerliste']) || !empty($game['zusatz']) || !empty($game['spielverlauf']) || !empty($game['halbzeitstand']))
+			{
 				
-				if (!empty($game['bericht']) && !empty($game['spielerliste']))
+				$query = $db->getQuery(true);
+				$query = "REPLACE INTO {$db->quoteName('aaa_spielbericht')} 
+					({$db->quoteName('spielIDhvw')}, {$db->quoteName('bericht')}, {$db->quoteName('spielerliste')}, {$db->quoteName('zusatz')}, {$db->quoteName('spielverlauf')}, {$db->quoteName('halbzeitstand')}) 
+					VALUES ({$db->quote($game['spielIDhvw'])}, ";
+					if (!empty($game['bericht'])) $query .= $db->quote($game['bericht']);
+						else $query .= 'NULL';
+						$query .= ', ';
+					if (!empty($game['spielerliste'])) $query .= $db->quote($game['spielerliste']);
+						else $query .= 'NULL';
+						$query .= ', ';
+					if (!empty($game['zusatz'])) $query .= $db->quote($game['zusatz']);
+						else $query .= 'NULL';
+						$query .= ', ';
+					if (!empty($game['spielverlauf'])) $query .= $db->quote($game['spielverlauf']);
+						else $query .= 'NULL';
+						$query .= ', ';
+					if (!empty($game['halbzeitstand'])) $query .= $db->quote($game['halbzeitstand']);
+						else $query .= 'NULL';
+					$query .= ");";
+				//echo $query; echo '<br />';
+				$db->setQuery($query);
+				try
 				{
-					
-					$query = $db->getQuery(true);
-					$query = "REPLACE INTO {$db->quoteName('aaa_spielbericht')} 
-						({$db->quoteName('spielIDhvw')}, {$db->quoteName('bericht')}, {$db->quoteName('spielerliste')}) 
-						VALUES ({$db->quote($game['spielIDhvw'])}, ";
-						if (!empty($game['bericht'])) $query .= $db->quote($game['bericht']);
-							else $query .= 'NULL';
-							$query .= ', ';
-						if (!empty($game['spielerliste'])) $query .= $db->quote($game['spielerliste']);
-							else $query .= 'NULL';
-						$query .= ");";
-					//echo $query; echo '<br />';
-					$db->setQuery($query);
-					try
-					{
-						// Execute the query in Joomla 2.5.
-						$result = $db->query();
-					}
-					catch (Exception $e)
-					{
-						// catch any database errors.
-					}
+					// Execute the query in Joomla 2.5.
+					$result = $db->query();
+				}
+				catch (Exception $e)
+				{
+					// catch any database errors.
 				}
 			}
 		}
@@ -229,8 +288,8 @@ class HBmanagerModelHBrecentGames extends JModel
 	
 		$query = $db->getQuery(true);
 		$query->select('*');
-		$query->from('aaa_spielbericht');
-		$query->leftJoin($db->quoteName('aaa_spiel').' USING ('.$db->quoteName('spielIDhvw').')');
+		$query->from('aaa_spiel');
+		$query->leftJoin($db->quoteName('aaa_spielbericht').' USING ('.$db->quoteName('spielIDhvw').')');
 		$query->leftJoin($db->quoteName('aaa_mannschaft').' USING ('.$db->quoteName('kuerzel').')');
 		$query->where($db->quoteName('datum').' BETWEEN '.$db->quote($this->dateStart).' AND '.$db->quote($this->dateEnd));
 		$query->order($db->quoteName('reihenfolge').' ASC');
@@ -239,11 +298,11 @@ class HBmanagerModelHBrecentGames extends JModel
 		$games = $db->loadObjectList();
 		//echo "<pre>Games \n"; print_r($games); echo "</pre>";
 	
-		// frÃ¼hestes und spÃ¤testes betroffenes Datum
+		// frühestes und spätestes betroffenes Datum
 		$query = $db->getQuery(true);
 		$query->select('MIN('.$db->quoteName('datum').') AS min, MAX('.$db->quoteName('datum').') AS max');
-		$query->from('aaa_spielvorschau');
-		$query->leftJoin($db->quoteName('aaa_spiel').' USING ('.$db->quoteName('spielIDhvw').')');
+		$query->from('aaa_spiel');
+		$query->leftJoin($db->quoteName('aaa_spielbericht').' USING ('.$db->quoteName('spielIDhvw').')');
 		$query->where($db->quoteName('datum').' BETWEEN '.$db->quote($this->dateStart).' AND '.$db->quote($this->dateEnd));
 		//echo $query;echo "<br />";
 		$db->setQuery($query);
@@ -254,7 +313,7 @@ class HBmanagerModelHBrecentGames extends JModel
 		// Darstellung Datum
 		if ($dateframe->min == $dateframe->max)
 		{
-			$titledate = strftime("%a, ", strtotime($dateframe->min)).ltrim(strftime("%d. %b %Y", strtotime($dateframe->min)),'0');
+			$titledate = strftime("%A, ", strtotime($dateframe->min)).ltrim(strftime("%d. %b %Y", strtotime($dateframe->min)),'0');
 			$titledateKW = 'KW'.ltrim(strftime("%V", strtotime($dateframe->min)),'0');
 		}
 		else
@@ -309,7 +368,7 @@ class HBmanagerModelHBrecentGames extends JModel
 							'</tbody>'
 						.'</table>';
 			if (!empty($game->bericht))$content .= '<p class="spielbericht">'.$game->bericht.'</p>';
-			if (!empty($game->bericht))$content .= '<p class="spielerliste">'.$game->spielerliste.'</p>';
+			if (!empty($game->bericht))$content .= '<p class="spielerliste"><span>Es spielten:</span><br />'.$game->spielerliste.'</p>';
 			
 			$content .= '</div>';
 			
@@ -325,9 +384,9 @@ class HBmanagerModelHBrecentGames extends JModel
 		$data = array(
 				'alias' => $alias,
 				'title' => 'Ergebnisse vom '.$titledate,
-				//'title' => 'Vorschau fÃ¼r '.$titledateKW, //alternativ Anzeige KW statt Datum
+				//'title' => 'Vorschau für '.$titledateKW, //alternativ Anzeige KW statt Datum
 				'introtext' => $content,
-				//'fulltext' => '', //fÃ¼r Text der beim Klicken auf "Weiterlesen" erscheint
+				//'fulltext' => '', //für Text der beim Klicken auf "Weiterlesen" erscheint
 				'state' => 1,
 				'catid' => 8,
 				'featured' => 1
@@ -384,7 +443,7 @@ class HBmanagerModelHBrecentGames extends JModel
 			// catch any database errors.
 		}
 	
-		// in Frontpage DB table einfÃ¼gen
+		// in Frontpage DB table einfügen
 		$columns = array('content_id', 'ordering');
 		$values = array($db->quote($contentID), 1);
 		$query = $db->getQuery(true);
