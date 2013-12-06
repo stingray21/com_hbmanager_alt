@@ -305,8 +305,8 @@ class HBmanagerModelHBmanagerHVW extends JModel
 		}
 	
 		// Zur Kontrolle
-		// echo "<pre>"; print_r($spielplanString); echo "</pre>";
-		// echo "<pre>"; print_r($spielplanArray); echo "</pre>";
+		//echo "<pre>"; print_r($spielplanString); echo "</pre>";
+		//echo "<pre>"; print_r($spielplanArray); echo "</pre>";
 		
 		return $spielplanArray;
 	}
@@ -382,11 +382,11 @@ class HBmanagerModelHBmanagerHVW extends JModel
 			$game .= ",'".addslashes($data[7])."'";
 			
 			// ToreHeim
-			if ($data[8] != "") $game .= ",'".(int)$data[8]."'";
+			if ($data[8] != "") $game .= ",".(int)$data[8]."";
 			else $game .= ",NULL";
 			
 			// ToreGast
-			if ($data[9] != "") $game .= ",'".(int)$data[9]."'";
+			if ($data[9] != "") $game .= ", ".(int)$data[9]."";
 			else $game .= ",NULL";
 			
 			// Bemerkung
@@ -447,13 +447,17 @@ class HBmanagerModelHBmanagerHVW extends JModel
 				$query .= "\n".'ON DUPLICATE KEY UPDATE ';
 				$query .= 'spielIDhvw = '.$db->quote($spiel->SpielNR).', kuerzel = '.$db->quote($mannschaft->kuerzel).
 					', hallenNummer = '.$db->quote($spiel->Halle).', datum = '.$db->quote($spiel->Datum).', uhrzeit = '.$db->quote($spiel->Zeit).
-					', heim = '.$db->quote($spiel->Heim).', gast = '.$db->quote($spiel->Gast).
-					', toreHeim = ';
-				if (!empty($spiel->ToreHeim)) $query .= $db->quote($spiel->ToreHeim);
-				else $query .= 'NULL';
+					', heim = '.$db->quote($spiel->Heim).', gast = '.$db->quote($spiel->Gast);
+				$query .= ', toreHeim = ';
+				//if (!empty($spiel->ToreHeim) || '0' == $spiel->ToreHeim) $query .= $db->quote($spiel->ToreHeim);
+				//else $query .= 'NULL';
+				if ($spiel->ToreHeim === null) $query .= 'NULL';
+				else $query .= $db->quote($spiel->ToreHeim);
 				$query .= ', toreGast = ';
-				if (!empty($spiel->ToreGast)) $query .= $db->quote($spiel->ToreGast);
-				else $query .= 'NULL';
+				//if (!empty($spiel->ToreGast) || '0' == $spiel->ToreGast) $query .= $db->quote($spiel->ToreGast);
+				//else $query .= 'NULL';
+				if ($spiel->ToreGast === null) $query .= 'NULL';
+				else $query .= $db->quote($spiel->ToreGast);
 				$query .= ', bemerkung = '.$db->quote($spiel->Bemerkung)."\n";
 				
 				// Zur Kontrolle
@@ -543,7 +547,7 @@ class HBmanagerModelHBmanagerHVW extends JModel
 				foreach ($tabelle as $zeile)
 				{
 					//$query = $db->getQuery(true);
-					if (!empty($zeile->Platz)) $curPlatz = $zeile->Platz; // damit in leerer 'Platz'-Zelle mit Vorg�ngerwert benutzt wird (f�r direkten Zugriff)
+					if (!empty($zeile->Platz)) $curPlatz = $zeile->Platz; // damit in leerer 'Platz'-Zelle mit Vorg?ngerwert benutzt wird (f?r direkten Zugriff)
 					$torDifferenz = $zeile->Plustore - $zeile->Minustore;
 					
 					$query = $db->getQuery(true);
@@ -582,7 +586,7 @@ class HBmanagerModelHBmanagerHVW extends JModel
 				foreach ($tabelle as $zeile)
 				{
 					//$query = $db->getQuery(true);
-					if (!empty($zeile->Platz)) $curPlatz = $zeile->Platz; // damit in leerer 'Platz'-Zelle mit Vorg�ngerwert benutzt wird (f�r direkten Zugriff)
+					if (!empty($zeile->Platz)) $curPlatz = $zeile->Platz; // damit in leerer 'Platz'-Zelle mit Vorg?ngerwert benutzt wird (f?r direkten Zugriff)
 					$torDifferenz = $zeile->Plustore - $zeile->Minustore;
 					
 					$query = $db->getQuery(true);
