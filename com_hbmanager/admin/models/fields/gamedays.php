@@ -30,7 +30,7 @@ class JFormFieldGamedays extends JFormFieldList
 		$query = $db->getQuery(true);
         
        	$query->select("DISTINCT DATE_FORMAT(datum, '%a, %d.%m.%Y') AS ".$db->qn('value').", datum AS ".$db->qn('key'));
-		$query->from('aaa_spiel');
+		$query->from('hb_spiel');
 		$query->order($db->quoteName('datum').' ASC');
 		$db->setQuery($query);
 

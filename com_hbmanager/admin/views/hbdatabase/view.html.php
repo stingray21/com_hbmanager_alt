@@ -8,21 +8,25 @@ jimport('joomla.application.component.view');
 /**
  * HTML View class for the HB Manager Component
  */
-class HBmanagerViewHBmanager extends JView
+class HBmanagerViewHbDatabase extends JView
 {
 	// Overwriting JView display method
 	function display($tpl = null)
 	{
-		$model = $this->getModel('HBmanager');
+		$model = $this->getModel('hbdatabase');
 		$this->assignRef('model', $model);
+		$model->setDBtables('hb_%');
+		
+		$teams = $model->getTeams();
+		$this->assignRef('teams', $teams);
+		//echo __FILE__.'('.__LINE__.'):<pre>';print_r($teams);echo'</pre>';
 		
 		
-		JToolBarHelper::title(JText::_('COM_HBMANAGER_HOME_TITLE'), 'hblogo');
+		JToolBarHelper::title(JTEXT::_('COM_HBMANAGER_DATABASE_TITLE'),'hblogo');
 		
 		
 		// get the stylesheet (with automatic lookup, 
 		// possible template overrides, etc.)
-		//JHtml::stylesheet('admin.stylesheet.css','media/com_hbmanager/css/');
 		JHtml::stylesheet('com_hbmanager/admin.stylesheet.css', array(), true);
 		
 		// Display the view

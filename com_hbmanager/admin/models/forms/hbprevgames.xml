@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="hbprevgames">
+		<fieldset name="games">
+			<field
+				name="spielIDhvw"
+				type="hidden"
+			/>
+			<field 
+				name="includeToNews" 
+				type="checkbox" 
+				label="veröffentlichen" 
+				description="Bericht wird in 'Letzte Spiele'-Artikel aufgenommen" 
+				value="1" 
+				default="0" 
+			/>
+			<field
+				name="bericht"
+				type="textarea"
+				label="Spielbericht" 
+				description="Spielbericht"
+				default=""
+				cols="30"
+				rows="8"
+			/>
+			<field
+				name="spielerliste"
+				type="textarea"
+				label="Spielerliste" 
+				description="Liste aller Spieler, die in diesem Spiel gespielt haben"
+				default=""
+				cols="30"
+				rows="2"
+			/>
+			<field
+				name="zusatz"
+				type="textarea"
+				label="Zusätzliche Informationen" 
+				description="Zusätzliche Informationen wie Bedankung bei Fans, kurze Vorschau auf nächstes Spiel"
+				default=""
+				cols="30"
+				rows="2"
+			/>
+			<field
+				name="halbzeitstand"
+				type="text"
+				label="Halbzeitstand" 
+				description="Torfilm des Spiels"
+				default=""
+				size="6"
+			/>
+			<field
+				name="spielverlauf"
+				type="text"
+				label="Spielverlauf" 
+				description="Torfilm des Spiels"
+				size="30"
+			/>
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="hbnextgames">
+		<fieldset name="games">
+			<field
+				name="spielIDhvw"
+				type="hidden"
+			/>
+			<field 
+				name="includeToNews" 
+				type="checkbox" 
+				label="veröffentlichen" 
+				description="Bericht wird in 'Vorschau'-Artikel aufgenommen" 
+				value="1" 
+				default="0" 
+			/>
+			<field
+				name="vorschau"
+				type="textarea"
+				label="Vorschau-Text" 
+				description="Ausblick auf das nächste Spiel"
+				default=""
+				cols="30"
+				rows="8"
+			/>
+			<field
+				name="treffOrt"
+				type="textarea"
+				label="Treffpunkt - Wo?" 
+				description="Wo man sich vor dem Spiel trifft?"
+				default=""
+				cols="30"
+				rows="1"
+			/>
+			<field
+				name="treffZeit"
+				type="textarea"
+				label="Treffpunkt - Wann?" 
+				description="Wann man sich vor dem Spiel trifft?"
+				cols="30"
+				rows="1"
+			/>
+		</fieldset>
+	</fields>
+</form>

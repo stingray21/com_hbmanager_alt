@@ -6,23 +6,23 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.view');
  
 /**
- * HTML View class for the HB Manager Component
+ * HTML View class for the HB HVW Manager Component
  */
-class HBmanagerViewHBmanager extends JView
+class HBmanagerViewHbcalendar extends JView
 {
 	// Overwriting JView display method
 	function display($tpl = null)
 	{
-		$model = $this->getModel('HBmanager');
-		$this->assignRef('model', $model);
+		$model = $this->getModel('hbcalendar');
 		
+		$teams = $model->getTeams();
+		$this->assignRef('teams', $teams);
 		
-		JToolBarHelper::title(JText::_('COM_HBMANAGER_HOME_TITLE'), 'hblogo');
+		JToolBarHelper::title(JTEXT::_('COM_HBMANAGER_CALENDAR_TITLE'),'hblogo');
 		
 		
 		// get the stylesheet (with automatic lookup, 
 		// possible template overrides, etc.)
-		//JHtml::stylesheet('admin.stylesheet.css','media/com_hbmanager/css/');
 		JHtml::stylesheet('com_hbmanager/admin.stylesheet.css', array(), true);
 		
 		// Display the view

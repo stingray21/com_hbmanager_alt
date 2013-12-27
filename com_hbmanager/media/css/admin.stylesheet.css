@@ -1,9 +1,9 @@
 .icon-48-hvw {
-  background: url('../images/hvw-48.png') 0 0 no-repeat;
+  background: url('../images/hvw-48x48.png') 0 0 no-repeat;
 }
 
 .icon-48-hblogo {
-  background: url('../images/hblogo-48.png') 0 0 no-repeat;
+  background: url('../images/hblogo-48x48.png') 0 0 no-repeat;
 }
 
 a.hbbutton,
@@ -150,26 +150,26 @@ div.spiele div.spieleSpiel dl.spieleTore input {
 	padding: 0;
 }
 	
-table.upcomingGamesTable td.game {
+table.nextGamesTable td.game {
 	border-bottom: 2px solid gray;
 }
 	
-table.upcomingGamesTable th.game {
+table.nextGamesTable th.game {
 	border-bottom: 2px solid gray;
 	padding: 0;
 	vertical-align: top;
 	text-align: right;
 }
 	
-table.upcomingGamesTable td.game td {
+table.nextGamesTable td.game td {
 	padding: 0;
 }
 
-table.upcomingGamesTable td.game td.alignright {
+table.nextGamesTable td.game td.alignright {
 	text-align: right;
 }
 	
-table.upcomingGamesTable td.game th {
+table.nextGamesTable td.game th {
 	text-align: right;
 	padding: 0;
 }

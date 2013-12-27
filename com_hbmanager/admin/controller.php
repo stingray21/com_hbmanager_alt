@@ -9,299 +9,268 @@ jimport('joomla.application.component.controller');
 /**
  * HB Manager Component Controller
  */
-class HBmanagerController extends JController
+class hbmanagerController extends JController
 {
 
-	function display($cachable=false)
+	function display($cachable=false, $urlparams = false)
 	{
 		// set default view if not set
 		JRequest::setVar('view', JRequest::getCmd('view', 'hbmanager'));
 
 		parent::display($cachable);
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('');
+		hbhelper::addSubmenu('');
 	}
 	
-	function zeigeHVWDBTables()
+	function showTeams()
 	{
-		$model = $this->getModel('hbmanagerhvw');
-		
-		$view = $this->getView('hbmanagerhvw','html');
-		$view->setModel($model);
-		
-		$view->display();
-		
-		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerhvw');
-	}
-	
-	function updatehvw()
-	{
-		$jinput = JFactory::getApplication()->input;
-		$kuerzel = $jinput->get('kuerzel', 'kein');
-		
-		$model = $this->getModel('hbmanagerhvw');
-		$model->updateDB($kuerzel);
-		
-		$view = $this->getView('hbmanagerhvw','html');
-		$view->setModel($model);
-		$view->display();
-	
-		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerhvw');
-	}
-	
-	function manageMannschaften()
-	{
-		$model = $this->getModel('hbmanagerteams');
-		
-		
+		$model = $this->getModel('hbteams');
+
 		$post = JRequest::get('post');
-		//echo "<pre>"; print_r($post); echo "</pre>";
-		if ($post['teamsUpdated']) {
-			$model->updateMannschaften($post['hbmannschaft']);
+		//echo "=> contoller->post<br><pre>"; print_r($post); echo "</pre>";
+		if (isset($post['updateTeams_button'])) {
+			$model->updateTeams($post['hbteam']);
 		}
-		if ($post['teamsAdded']) {
-			$model->addNewTeams2Db($post['hbmannschaftNeu']);
+		if (isset($post['addTeams_button'])) {
+			$model->addNewTeams($post['hbAddTeam']);
 		}
-		if ($post['teamsDeleted']) {
-			$model->deleteMannschaften($post['hbmannschaftdelete']);
+		if (isset($post['deleteTeams_button'])) {
+			$model->deleteTeams($post['hbDeleteTeam']);
 		}
 		
-		$view = $this->getView('hbmanagerteams','html');
+		$view = $this->getView('hbteams','html');
  		$view->setModel($model);
 		
 		$view->display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerteams');
+		hbhelper::addSubmenu('hbteams');
 	}
-	
-	function addHvwMannschaften()
+	function addTeams()
 	{
-		$model = $this->getModel('hbmanagerteams');
-	
-		$view = $this->getView('hbmanagerteams','html');
+		$model = $this->getModel('hbteams');
+		
+		$jinput = JFactory::getApplication()->input;
+		$updateHvw = $jinput->get('getHvwData', false);
+		
+		if ($updateHvw)
+		{
+			$year = strftime('%Y');
+			if (strftime('%m') < 9) $year = $year-1;
+			$leagueArray = $model->getLeagueArrayFromHVW(
+					'http://www.hvw-online.org/index.php'.
+					'?id=39&orgID=11&A=g_org&nm=0&do='.
+					$year.'-10-01');
+			$model->updateLeaguesInDB($leagueArray);
+		}
+		
+		$view = $this->getView('hbteams','html');
 		$view->setModel($model);
 		$view->setLayout('addteams');
 	
 		$view->display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerteams');
+		hbhelper::addSubmenu('hbteams');
 	}
 	
-	function deleteMannschaften()
+	function deleteTeams()
 	{
-		$model = $this->getModel('hbmanagerteams');
+		$model = $this->getModel('hbteams');
 	
-		$view = $this->getView('hbmanagerteams','html');
+		$view = $this->getView('hbteams','html');
+		$view->setModel($model);	
+		$view->setLayout('deleteteams');	
+	
+		$view->display();
+		
+		// Set the submenu
+		hbhelper::addSubmenu('hbteams');
+	}
+	
+	function showData()
+	{
+		$model = $this->getModel('hbdata');
+		
+		$view = $this->getView('hbdata','html');
 		$view->setModel($model);
-		$view->setLayout('deleteteams');		
-	
+		
 		$view->display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerteams');
+		hbhelper::addSubmenu('hbdata');
 	}
 	
-	function manageDBtables()
+	function updateData()
 	{
 		$jinput = JFactory::getApplication()->input;
-	
-		$model = $this->getModel('hbmanagerdb');
-	
-		$view = $this->getView('hbmanagerdb','html');
-		$view->setModel($model, true);
+		$teamkey = $jinput->get('teamkey', 'none');
+		
+		$model = $this->getModel('hbdata');
+		$model->updateDB($teamkey);
+		
+		$view = $this->getView('hbdata','html');
+		$view->setModel($model);
 		$view->display();
-		//self::display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerteams');
+		hbhelper::addSubmenu('hbdata');
 	}
 	
-
-	function createDBtables()
+	function showPrevGames()
 	{
-		$jinput = JFactory::getApplication()->input;
-		$createTables = $jinput->get('createTables', '');
-	
-		$model = $this->getModel('hbmanagerdb');
-	
-		$model->createDBtables($createTables);
-	
-		$view = $this->getView('hbmanagerdb','html');
-		$view->setModel($model, true);
-		$view->display();
-		//self::display();
-		
-		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagerdb');
-	}
-	
-	function updateCal()
-	{
-		$jinput = JFactory::getApplication()->input;
-		$kuerzel = $jinput->get('kuerzel', 'kein');
-	
-		$model = $this->getModel('hbmanagercal');
-		
-		$model->updateCal($kuerzel);
-	
-		$view = $this->getView('hbmanagercal','html');
-		$view->setModel($model, true);
-		$view->display();
-		//self::display();
-		
-		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbmanagercal');
-	}
-	/*
-	function manageDBtables()
-	{
-		$jinput = JFactory::getApplication()->input;
-		
-		$model = $this->getModel('hbdbmanager');
-	
-		$view = $this->getView('hbdbmanager','html');
-		$view->setModel($model, true);
-		$view->display();
-		//self::display();
-	}
-	*/
-	function updateRecentGames()
-	{
-		$jinput = JFactory::getApplication()->input;
-	
-		$model = $this->getModel('hbrecentgames');
+		$model = $this->getModel('hbprevgames');
 		
 		$post = JRequest::get('post');
-		//echo "<p>POST in controller</p><pre>"; print_r($post); echo "</pre>";
+		//echo __FILE__.'('.__LINE__.'):<pre>';print_r($post);echo'</pre>';
 		
-		$model->setDates($post['hbmanagerdates']);
+		$dates = null;
+		if (isset($post['hbdates'])) $dates = $post['hbdates'];
+		$model->setDates($dates);
 		
-// 		if (isset($post['date_button'])) {
-// 			//echo "<p>Date button</p>";
-// 			$model->setDates($post['hbmanagerdates']);
-// 		}
-
-		$previousGames = $post['hbrecentgames'];
+		if (isset($post['hbprevgames'])) $prevGames = $post['hbprevgames'];
+		else $prevGames = null;
+		
 		if (isset($post['update_button'])) {
-			//echo "<p>Update button</p>";
-			$model->writeDB($previousGames);
+			//echo "=> Update button<br>";
+			$model->updateDB($prevGames);
 		} 
-		else if (isset($post['article_button'])) {
-			//echo "<p>Article button</p>";
-			$model->writeDB($previousGames);
+		elseif (isset($post['article_button'])) {
+			//echo "=> Article button<br>";
+			$model->updateDB($prevGames);
 			$model->writeNews();
 		} 
 		else {
 			//no button pressed
 		}
 		
-		$view = $this->getView('hbrecentgames','html');
+		$view = $this->getView('hbprevgames','html');
 		$view->setModel($model, true);
 		$view->display();
 		//self::display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbrecentgames');
+		hbhelper::addSubmenu('hbprevgames');
 	}
 	
-	function updateUpcomingGames()
+	function showNextGames()
 	{
-		$jinput = JFactory::getApplication()->input;
-		
-		$model = $this->getModel('hbupcominggames');
+		$model = $this->getModel('hbnextgames');
 
 		$post = JRequest::get('post');
-		//echo "<p>POST in controller</p><pre>"; print_r($post); echo "</pre>";
+		//echo __FILE__.'('.__LINE__.'):<pre>';print_r($post);echo'</pre>';
 		
-		$model->setDates($post['hbmanagerdates']);
+		$dates = null;
+		if (isset($post['hbdates'])) $dates = $post['hbdates'];
+		$model->setDates($dates);
 		
-		// 		if (isset($post['date_button'])) {
-		// 			//echo "<p>Date button</p>";
-		// 			$model->setDates($post['hbmanagerdates']);
-		// 		}
+		if (isset($post['hbnextgames'])) $nextGames = $post['hbnextgames'];
+		else $nextGames = null;
 		
-		$upcomingGames = $post['hbupcominggames'];
 		if (isset($post['update_button'])) {
-			//echo "<p>Update button</p>";
-			$model->updateDB($upcomingGames);
+			//echo "=> update button<br>";
+			$model->updateDB($nextGames);
 		}
-		else if (isset($post['article_button'])) {
-			//echo "<p>Article button</p>";
-			$model->updateDB($upcomingGames);
+		elseif (isset($post['article_button'])) {
+			//echo "=> article button<br>";
+			$model->updateDB($nextGames);
 			$model->writeNews();
 		}
 		else {
 			//no button pressed
-		}
+		}		
 		
-		if (isset($post['sent']))
-		{
-			if ($post['sent'])
-			{
-				$upcomingGames = $model->getUpcomingGamesArray($post);
-				//echo "<pre>"; print_r($upcomingGames); echo "</pre>";
-					
-				$model->updateDB($upcomingGames);
-				$model->writeNews();
-			}
-		}
-		
-		
-		$view = $this->getView('hbupcominggames','html');
+		$view = $this->getView('hbnextgames','html');
 		$view->setModel($model, true);
 		$view->display();
 		//self::display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbupcominggames');
+		hbhelper::addSubmenu('hbnextgames');
 	}
 	
-	function showAmtsblatt()
+	function showJournal()
 	{
-		$jinput = JFactory::getApplication()->input;
-		
-		$model = $this->getModel('hbamtsblatt');
+		$model = $this->getModel('hbjournal');
 		
 		$post = JRequest::get('post');
-		//echo "<pre>"; print_r($post); echo "</pre>";
+		//echo "=> contoller->post<br><pre>"; print_r($post); echo "</pre>";
 		
-		if ($post['dateChanged'])
-		{
-			//echo "Datum geändert <br />";
-			$model->updateDates($post['hbmanagerfields']);
-		}
-		//$model->writeAmtsblatt();
+		$dates = null;
+		if (isset($post['hbdates'])) $dates = $post['hbdates'];
+		$model->setDates($dates);
 		
-		$view = $this->getView('hbamtsblatt','html');
+
+		
+		$view = $this->getView('hbjournal','html');
 		$view->setModel($model, true);
 		$view->display();
 		//self::display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbamtsblatt');
+		hbhelper::addSubmenu('hbjournal');
 	}
 
-	function showAmtsblattWord()
+	function showDatabase()
+	{
+		$model = $this->getModel('hbdatabase');
+	
+		$view = $this->getView('hbdatabase','html');
+		$view->setModel($model, true);
+		$view->display();
+		//self::display();
+		
+		// Set the submenu
+		hbhelper::addSubmenu('hbdatabase');
+	}
+	
+	function createDbTables()
 	{
 		$jinput = JFactory::getApplication()->input;
+		$dbOption = $jinput->get('dbOption', '');
 	
-		$model = $this->getModel('hbamtsblatt');
+		$model = $this->getModel('hbdatabase');
 	
+		$model->createDBtables($dbOption);
 	
-		//$model->writeAmtsblatt();
-	
-		$view = $this->getView('hbamtsblattArtikel','docx');
+		$view = $this->getView('hbdatabase','html');
 		$view->setModel($model, true);
 		$view->display();
 		//self::display();
 		
 		// Set the submenu
-		hbmanagerHelper::addSubmenu('hbamtsblatt');
+		hbhelper::addSubmenu('hbdatabase');
 	}
-
-
+	
+	function showCalendar()
+	{
+		$jinput = JFactory::getApplication()->input;
+		$teamkey = $jinput->get('teamkey', 'kein');
+	
+		$model = $this->getModel('hbcalendar');
+		
+		$model->updateCal($teamkey);
+	
+		$view = $this->getView('hbcalendar','html');
+		$view->setModel($model, true);
+		$view->display();
+		//self::display();
+		
+		// Set the submenu
+		hbhelper::addSubmenu('hbcalendar');
+	}
+	
+	function showJournalWord()
+	{
+		$model = $this->getModel('hbjournal');
+	
+		$view = $this->getView('hbJournalWord','docx');
+		$view->setModel($model, true);
+		$view->display();
+		//self::display();
+		
+		// Set the submenu
+		hbhelper::addSubmenu('hbjournal');
+	}
+	
 } 

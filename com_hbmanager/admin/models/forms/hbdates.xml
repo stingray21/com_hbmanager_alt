@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fields name="hbmanagerdates">
+	<fields name="hbdates">
 		<fieldset name="dates">
 			<field
 				name="id"
@@ -15,28 +15,28 @@
 				default="NOW"
 			/>
 			<field 
-				name="startdateRecent" 
+				name="startdatePrev" 
 				type="gamedays" 
 				default="" 
 				class="articleselectbox" 
 				label="von Spieltag"
 			/>
 			<field 
-				name="enddateRecent" 
+				name="enddatePrev" 
 				type="gamedays" 
 				default="" 
 				class="articleselectbox" 
 				label="bis Spieltag"
 			/> 
 			<field 
-				name="startdateUpcoming"
+				name="startdateNext"
 				type="gamedays" 
 				default="" 
 				class="articleselectbox" 
 				label="von Spieltag"
 			/> 
 			<field 
-				name="enddateUpcoming"  
+				name="enddateNext"  
 				type="gamedays" 
 				default="" 
 				class="articleselectbox" 
@@ -45,25 +45,25 @@
 			
 			
 			<field 
-				name="hiddenStartdateRecent" 
+				name="hiddenStartdatePrev" 
 				type="hidden" 
 				default="" 
 				label="von Spieltag"
 			/>
 			<field 
-				name="hiddenEnddateRecent" 
+				name="hiddenEnddatePrev" 
 				type="hidden" 
 				default="" 
 				label="bis Spieltag"
 			/> 
 			<field 
-				name="hiddenStartdateUpcoming"
+				name="hiddenStartdateNext"
 				type="hidden" 
 				default="" 
 				label="von Spieltag"
 			/> 
 			<field 
-				name="hiddenEnddateUpcoming"  
+				name="hiddenEnddateNext"  
 				type="hidden" 
 				default=""  
 				label="bis Spieltag"
